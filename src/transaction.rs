@@ -72,7 +72,7 @@ pub trait Transaction : Sized {
                     database: Database,
                     key: &K)
                     -> Result<&'txn [u8]>
-    where K: AsRef<[u8]> {
+    where K: AsRef<[u8]> + ?Sized {
         let key = key.as_ref();
         let mut key_val: ffi::MDB_val = ffi::MDB_val { mv_size: key.len() as size_t,
                                                        mv_data: key.as_ptr() as *mut c_void };
@@ -273,7 +273,7 @@ impl <'env> RwTransaction<'env> {
                      data: &D,
                      flags: WriteFlags)
                      -> Result<()>
-    where K: AsRef<[u8]>, D: AsRef<[u8]> {
+    where K: AsRef<[u8]> + ?Sized, D: AsRef<[u8]> + ?Sized {
         let key = key.as_ref();
         let data = data.as_ref();
         let mut key_val: ffi::MDB_val = ffi::MDB_val { mv_size: key.len() as size_t,
